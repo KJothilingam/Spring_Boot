@@ -17,11 +17,20 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private int availableCount;
     private String name;
-    private String type;
+    private boolean needsService;
     private String numberPlate;
     private double rentalPrice;
-    private int availableCount;
     private int totalKmsDriven;
-    private boolean needsService;
+    private String type;
+    private int lastServiceAt;
+
+
+
+
+
+
+
+
 }

@@ -27,40 +27,31 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-
-//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf(customizer -> customizer.disable()).
-                authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll()
-                        .anyRequest().authenticated()).httpBasic(Customizer.withDefaults()).sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        return http
+                .csrf(customizer -> customizer.disable()) // Disable CSRF (since we're using JWT)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/login", "/register").permitAll()  // Public endpoints
+                        .requestMatchers("/vehicles/add", "/vehicles/update", "/vehicles/delete").hasRole("ADMIN") // Admin only
+                        .anyRequest().authenticated() // All other requests require authentication
+                )
+                .httpBasic(customizer -> customizer.disable()) // Disable default login form
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session
+                .authenticationProvider(authenticationProvider()) // Custom authentication provider
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT filter before authentication
                 .build();
+
+//        return http.csrf(customizer -> customizer.disable()).
+//                authorizeHttpRequests(request -> request
+//                        .requestMatchers("/login", "/register").permitAll()
+//                        .anyRequest().authenticated()).httpBasic(Customizer.withDefaults()).sessionManagement(
+//                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                .build();
     }
-//
-//
-////    @Bean
-////    public UserDetailsService userDetailsService() {
-////
-////        UserDetails user1 = User
-////                .withDefaultPasswordEncoder()
-////                .username("kiran")
-////                .password("k@123")
-////                .roles("USER")
-////                .build();
-////
-////        UserDetails user2 = User
-////                .withDefaultPasswordEncoder()
-////                .username("harsh")
-////                .password("h@123")
-////                .roles("ADMIN")
-////                .build();
-////        return new InMemoryUserDetailsManager(user1, user2);
-////    }
-//
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -68,7 +59,7 @@ public class SecurityConfig {
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
-//
+
 //
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

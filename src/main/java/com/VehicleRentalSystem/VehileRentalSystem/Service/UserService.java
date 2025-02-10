@@ -34,40 +34,7 @@ public class UserService {
         return repository.findByEmail(email);
     }
 
-//    public String verify(Users user) {
-//        System.out.println(user);
-//        Authentication authentication = authManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-//        if (authentication.isAuthenticated()) {
-//            return jwtService.generateToken(user.getUsername())  ;
-//        } else {
-//            return "fail";
-//        }
-//    }
-//public String verify(Users user) {
-//    System.out.println("User trying to log in: " + user.getUsername()); // Debugging
-//
-//    Optional<Users> existingUser = repository.findByUsernameOP(user.getUsername());
-//
-//    if (existingUser.isEmpty()) {
-//        return "User not found";
-//    }
-//
-//    // Check hashed password
-//    if (!encoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-//        return "Invalid credentials";
-//    }
-//
-//    // Authenticate user
-//    Authentication authentication = authManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-//
-//    if (authentication.isAuthenticated()) {
-//        return jwtService.generateToken(user.getUsername());
-//    } else {
-//        return "Authentication failed";
-//    }
-//}
+
 public String verify(Users user) {
     System.out.println("User trying to log in: " + user.getUserName()); // Debugging
 
