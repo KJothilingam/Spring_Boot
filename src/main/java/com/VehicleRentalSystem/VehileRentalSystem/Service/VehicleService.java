@@ -4,6 +4,7 @@ import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
 import com.VehicleRentalSystem.VehileRentalSystem.Model.Vehicle;
 import com.VehicleRentalSystem.VehileRentalSystem.Repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,27 @@ public class VehicleService {
 
     public void updateVehicle(Vehicle vehicle) {
         repository.save(vehicle);
+    }
+
+    public List<Vehicle> searchVehicles(String name, String numberPlate, Integer availableCount, String sortBy) {
+        Sort sort = Sort.unsorted();
+        // Set sorting options
+        if ("name".equalsIgnoreCase(sortBy)) {
+            sort = Sort.by(Sort.Direction.ASC, "name");
+        } else if ("availableCount".equalsIgnoreCase(sortBy)) {
+            sort = Sort.by(Sort.Direction.DESC, "availableCount");
+        }
+
+        // If search parameters are provided, filter accordingly
+        if (name != null) {
+            return repository.findByNameContainingIgnoreCase(name, sort);
+        } else if (numberPlate != null) {
+            return repository.findByNumberPlateContainingIgnoreCase(numberPlate, sort);
+        } else if (availableCount != null) {
+            return repository.findByAvailableCountGreaterThanEqual(availableCount, sort);
+        } else {
+            return repository.findAll(sort);
+        }
     }
 
 //    public void UpdateVehicle(Vehicle vehicle) {

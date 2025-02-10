@@ -63,4 +63,20 @@ public String verify(Users user) {
     public List<Users> findAll() {
         return repository.findAll();
     }
+
+
+    public boolean updateSecurityDeposit(Long userId, int securityDeposit) {
+        Optional<Users> optionalUser = repository.findById(userId);
+        if (optionalUser.isPresent()) {
+            Users user = optionalUser.get();
+            // Prevent admins from updating their own security deposit
+            if ("ADMIN".equals(user.getRole())) {
+                return false; // Admins should not have a security deposit
+            }
+            user.setSecurityDeposit(securityDeposit);
+            repository.save(user);
+            return true;
+        }
+        return false;
+    }
 }

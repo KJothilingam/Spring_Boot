@@ -4,6 +4,7 @@ import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
 import com.VehicleRentalSystem.VehileRentalSystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +39,18 @@ public class UserController {
     public ResponseEntity<Optional<Users>> getUserByEmail(@PathVariable String email) {
         System.out.println("email Search");
         return ResponseEntity.ok(service.getUserByEmail(email));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')") // Only Admins can access this
+    @PutMapping("/update-deposit/{userId}")
+    public ResponseEntity<String> updateSecurityDeposit(
+            @PathVariable Long userId,
+            @RequestParam int securityDeposit) {
+        boolean updated = service.updateSecurityDeposit(userId, securityDeposit);
+        if (updated) {
+            return ResponseEntity.ok("Security deposit updated successfully!");
+        } else {
+            return ResponseEntity.badRequest().body("User not found or update not allowed!");
+        }
     }
 }

@@ -58,6 +58,18 @@ public class VehicleController {
         return ResponseEntity.ok("Vehicle updated successfully!");
     }
 
+//    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/search")
+    public ResponseEntity<List<Vehicle>> searchVehicles(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String numberPlate,
+            @RequestParam(required = false) Integer availableCount,
+            @RequestParam(required = false, defaultValue = "name") String sortBy) {
+
+        List<Vehicle> vehicles = vehicleService.searchVehicles(name, numberPlate, availableCount, sortBy);
+        return ResponseEntity.ok(vehicles);
+    }
+
 
 
 
