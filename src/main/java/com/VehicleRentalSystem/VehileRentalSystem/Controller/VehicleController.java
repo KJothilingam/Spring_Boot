@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vehicle")
+@RequestMapping("/vehicles")
 public class VehicleController {
 
     @Autowired
@@ -26,25 +26,40 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.findAll());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public String addVehicle(@RequestBody Vehicle vehicle) {
-        vehicleService.addVehicle(vehicle);
+//        vehicleService.addVehicle(vehicle);
         return "Vehicle added successfully!";
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    @PutMapping("/update")
-//    public String updateVehicle(@RequestBody Vehicle vehicle) {
-//        vehicleService.UpdateVehicle(vehicle);
-//        return "Vehicle updated successfully!";
-//    }
-//
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    @DeleteMapping("/delete")
-//    public String deleteVehicle(@RequestParam Long id) {
-//        return "Vehicle deleted successfully!";
-//    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteVehicle(@RequestParam Long id) {
+        if (vehicleService.existsById(id)) {
+            vehicleService.deleteById(id);
+            return ResponseEntity.ok("Vehicle deleted successfully!");
+        } else {
+            return ResponseEntity.badRequest().body("Vehicle not found!");
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<String> updateVehicle(@RequestBody Vehicle vehicle) {
+        if (vehicle.getId() == null) {
+            return ResponseEntity.badRequest().body("Vehicle ID is required for update!");
+        }
+
+        if (!vehicleService.existsById(vehicle.getId())) {
+            return ResponseEntity.badRequest().body("Vehicle not found!");
+        }
+
+        vehicleService.updateVehicle(vehicle);
+        return ResponseEntity.ok("Vehicle updated successfully!");
+    }
+
+
+
 
 
 

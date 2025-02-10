@@ -22,6 +22,18 @@ public class VehicleService {
         return repository.save(vehicle);
     }
 
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public void updateVehicle(Vehicle vehicle) {
+        repository.save(vehicle);
+    }
+
 //    public void UpdateVehicle(Vehicle vehicle) {
 //        return repository.saveAll(vehicle);
 //    }

@@ -20,17 +20,6 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository userRepo;
 
 
-//    @Override
-//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-//        Optional<Users> user = userRepo.findByUserName(userName);
-//        if (user.isEmpty()) {
-//            System.out.println("User Not Found -jwt");
-//            throw new UsernameNotFoundException("User not found jwt throw");
-//        }
-//        return new UserPrincipal(user.get());
-//
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Optional<Users> user = userRepo.findByUserName(userName);
