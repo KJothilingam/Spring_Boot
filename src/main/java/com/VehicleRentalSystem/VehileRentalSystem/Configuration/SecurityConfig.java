@@ -43,7 +43,9 @@ public class SecurityConfig {
                                         "/vehicles/add", "/vehicles/update",
                                         "/vehicles/delete",
                                         "/vehicles/service/{vehicleId}",
-                                        "/vehicles/markForService"
+                                        "/vehicles/markForService",
+                                        "/rentals/all-rented",
+                                        "/rentals/unreturned"
                                 ).hasRole("ADMIN")
                         .anyRequest().authenticated() // All other requests require authentication
                 )
@@ -63,10 +65,9 @@ public class SecurityConfig {
         return provider;
     }
 
-//
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-//
+
 }

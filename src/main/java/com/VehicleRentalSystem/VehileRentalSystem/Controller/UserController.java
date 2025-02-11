@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping("/register")
     public Users register(@RequestBody Users user){
-//        System.out.println(user +" Getting Added ");
+        System.out.println(user +" Getting Added ");
         return service.registerUser(user);
     }
 
@@ -35,13 +35,14 @@ public class UserController {
         System.out.println("User List");
         return ResponseEntity.ok(service.findAll());
     }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<Optional<Users>> getUserByEmail(@PathVariable String email) {
         System.out.println("email Search");
         return ResponseEntity.ok(service.getUserByEmail(email));
     }
 
-    @PreAuthorize("hasRole('ADMIN')") // Only Admins can access this
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update-deposit/{userId}")
     public ResponseEntity<String> updateSecurityDeposit(
             @PathVariable Long userId,
@@ -53,4 +54,6 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found or update not allowed!");
         }
     }
+
+
 }

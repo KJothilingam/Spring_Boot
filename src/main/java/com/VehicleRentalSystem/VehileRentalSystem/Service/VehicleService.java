@@ -19,31 +19,25 @@ public class VehicleService {
 
     @Transactional
     public List<Vehicle> markVehiclesForService() {
-        // ✅ Find Bikes (`lastServiceAt > 1500`)
+
         List<Vehicle> bikesToService = repository.findBikesForService();
-        // ✅ Find Cars (`lastServiceAt > 3000`)
+
         List<Vehicle> carsToService = repository.findCarsForService();
 
-        // ✅ Combine both lists
         List<Vehicle> vehiclesToService = new ArrayList<>();
         vehiclesToService.addAll(bikesToService);
         vehiclesToService.addAll(carsToService);
 
         if (vehiclesToService.isEmpty()) {
-            return List.of(); // Return empty list if no servicing needed
+            return List.of();
         }
-
-        // ✅ Mark each vehicle as needing service
         for (Vehicle vehicle : vehiclesToService) {
             vehicle.setNeedsService(true);
             repository.save(vehicle);
         }
 
-        return vehiclesToService; // Return the updated list of vehicles needing service
+        return vehiclesToService;
     }
-
-
-
 
     @Transactional
     public String serviceVehicle(Long vehicleId) {
@@ -51,26 +45,19 @@ public class VehicleService {
         if (vehicle == null) {
             return "Vehicle not found!";
         }
-
-        // 🚗 **Check if the vehicle is actually due for servicing**
         if (!vehicle.isNeedsService()) {
             return "Vehicle does not require servicing!";
         }
-
-        // 🚗 **Ensure the vehicle has exceeded the servicing threshold**
         if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getLastServiceAt() < 1500) ||
                 (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getLastServiceAt() < 3000)) {
             return "Cannot service this vehicle yet! It hasn't reached the required kilometers.";
         }
-        // ✅ **Perform Servicing: Reset `lastServiceAt` and `needsService`**
         vehicle.setLastServiceAt(0);
         vehicle.setNeedsService(false);
         repository.save(vehicle);
 
         return "Vehicle serviced successfully!";
     }
-
-
 
     public List<Vehicle> findAll() {
         return repository.findAll();
@@ -94,14 +81,12 @@ public class VehicleService {
 
     public List<Vehicle> searchVehicles(String name, String numberPlate, Integer availableCount, String sortBy) {
         Sort sort = Sort.unsorted();
-        // Set sorting options
         if ("name".equalsIgnoreCase(sortBy)) {
             sort = Sort.by(Sort.Direction.ASC, "name");
         } else if ("availableCount".equalsIgnoreCase(sortBy)) {
             sort = Sort.by(Sort.Direction.DESC, "availableCount");
         }
 
-        // If search parameters are provided, filter accordingly
         if (name != null) {
             return repository.findByNameContainingIgnoreCase(name, sort);
         } else if (numberPlate != null) {
@@ -112,6 +97,7 @@ public class VehicleService {
             return repository.findAll(sort);
         }
     }
+
 
 
 }

@@ -26,12 +26,8 @@ public class MyUserDetailsService implements UserDetailsService {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-
         Users foundUser = user.get();
-
-        // Append "ROLE_" to roles before passing them to Spring Security
         String roleWithPrefix = "ROLE_" + foundUser.getRole().toUpperCase();
-
         return new org.springframework.security.core.userdetails.User(
                 foundUser.getUserName(),
                 foundUser.getPassword(),

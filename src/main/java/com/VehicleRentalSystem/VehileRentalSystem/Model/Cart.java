@@ -5,10 +5,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "cart")
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
 public class Cart {
     @Override
     public String toString() {

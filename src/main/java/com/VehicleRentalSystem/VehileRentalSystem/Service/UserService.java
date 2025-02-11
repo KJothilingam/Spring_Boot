@@ -25,7 +25,7 @@ public class UserService {
     private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
 
     public Users registerUser(Users user) {
-        user.setPassword(encoder.encode(user.getPassword())); // Encrypt password
+        user.setPassword(encoder.encode(user.getPassword()));
           System.out.println("Saving user: " + user);
         return repository.save(user);
     }
@@ -36,7 +36,7 @@ public class UserService {
 
 
 public String verify(Users user) {
-    System.out.println("User trying to log in: " + user.getUserName()); // Debugging
+    System.out.println("User trying to log in: " + user.getUserName());
 
     Optional<Users> existingUser = repository.findByUserName(user.getUserName());
 
@@ -69,9 +69,8 @@ public String verify(Users user) {
         Optional<Users> optionalUser = repository.findById(userId);
         if (optionalUser.isPresent()) {
             Users user = optionalUser.get();
-            // Prevent admins from updating their own security deposit
             if ("ADMIN".equals(user.getRole())) {
-                return false; // Admins should not have a security deposit
+                return false;
             }
             user.setSecurityDeposit(securityDeposit);
             repository.save(user);
@@ -79,4 +78,6 @@ public String verify(Users user) {
         }
         return false;
     }
+
+
 }

@@ -12,11 +12,9 @@ import java.util.List;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    // ✅ Find Bikes that need service (`lastServiceAt > 1500`)
     @Query("SELECT v FROM Vehicle v WHERE v.type = 'BIKE' AND v.lastServiceAt > 1500")
     List<Vehicle> findBikesForService();
 
-    // ✅ Find Cars that need service (`lastServiceAt > 3000`)
     @Query("SELECT v FROM Vehicle v WHERE v.type = 'CAR' AND v.lastServiceAt > 3000")
     List<Vehicle> findCarsForService();
 

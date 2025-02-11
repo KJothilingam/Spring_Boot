@@ -33,16 +33,32 @@ public class RentalController {
         return ResponseEntity.ok(rentalService.getRentalHistory(userId));
     }
 
-//    @PostMapping("/return")
-//    public ResponseEntity<String> returnVehicle(
-//            @RequestParam Long rentalId,
-//            @RequestParam int kmsDriven,
-//            @RequestParam String damageLevel,
-//            @RequestParam boolean paidByCash) {
-//
-//        String response = rentalService.returnVehicle(rentalId, kmsDriven, damageLevel, paidByCash);
-//        return ResponseEntity.ok(response);
-//    }
+    @PutMapping("/return/{rentalId}")
+    public ResponseEntity<String> returnVehicle(
+            @PathVariable Long rentalId,
+            @RequestParam int kmsDriven,
+            @RequestParam String damageLevel,
+            @RequestParam boolean paidByCash) {
+
+        String response = rentalService.returnVehicle(rentalId, kmsDriven, damageLevel, paidByCash);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all-rented")
+    public ResponseEntity<List<Rental>> getAllRentedVehicles() {
+        List<Rental> rentals = rentalService.getAllRentedVehicles();
+        return ResponseEntity.ok(rentals);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/unreturned")
+    public ResponseEntity<List<Rental>> getUnreturnedVehicles() {
+        List<Rental> unreturnedRentals = rentalService.getUnreturnedVehicles();
+        return ResponseEntity.ok(unreturnedRentals);
+    }
 
 
 }

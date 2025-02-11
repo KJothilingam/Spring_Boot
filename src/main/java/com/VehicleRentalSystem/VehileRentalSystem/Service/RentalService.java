@@ -41,7 +41,6 @@ public class RentalService {
             return "Cart is empty!";
         }
 
-        // Fetch Active Rentals (Check if user already rented a vehicle)
         List<Rental> activeRentals = rentalRepository.findByBorrowerAndIsReturnedFalse(user);
         boolean hasBike = false;
         boolean hasCar = false;
@@ -61,18 +60,15 @@ public class RentalService {
         for (Cart cart : cartItems) {
             Vehicle vehicle = cart.getVehicle();
 
-            // 🚗 **Check if the vehicle is available**
             if (vehicle.getAvailableCount() <= 0) {
                 return "Vehicle " + vehicle.getName() + " is not available!";
             }
 
-            // 🚗 **Check Service Requirement**
             if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getLastServiceAt() >= 1500) ||
                     (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getLastServiceAt() >= 3000)) {
                 return "Vehicle " + vehicle.getName() + " needs servicing!";
             }
 
-            // 🚗 **Check if the user is trying to rent more than allowed**
             if (vehicle.getType().equalsIgnoreCase("BIKE")) {
                 if (hasBike || rentingBike) {
                     return "You can only rent one Bike at a time!";
@@ -85,16 +81,13 @@ public class RentalService {
                 rentingCar = true;
             }
 
-            // 🚗 **Calculate Total Rental Cost**
             totalRentalCost += vehicle.getRentalPrice();
         }
 
-        // 🚗 **Check if user has enough security deposit**
         if (user.getSecurityDeposit() < totalRentalCost) {
             return "Insufficient security deposit! Required: ₹" + totalRentalCost + ", Available: ₹" + user.getSecurityDeposit();
         }
 
-        // 🚗 **Deduct the rental price from security deposit**
         user.setSecurityDeposit(user.getSecurityDeposit() - totalRentalCost);
         userRepository.save(user);
 
@@ -105,18 +98,15 @@ public class RentalService {
             vehicle.setAvailableCount(vehicle.getAvailableCount() - 1);
             vehicleRepository.save(vehicle);
 
-            // 🚗 **Create Rental Record**
             Rental rental = new Rental();
             rental.setBorrower(user);
             rental.setVehicle(vehicle);
             rental.setRentalDate(LocalDate.now());
-            rental.setReturnDate(returnDate); // ✅ Ensure return date is set
+            rental.setReturnDate(returnDate);
             rental.setReturned(false);
             rental.setExtensionCount(0);
             rentalRepository.save(rental);
         }
-
-        // 🚗 **Clear cart after checkout**
         cartRepository.deleteByRenter(user);
         return "Checkout successful! Total Rental Cost: ₹" + totalRentalCost + " | Return Date: " + returnDate + " | Rented-> " + vehicleRent;
     }
@@ -124,43 +114,34 @@ public class RentalService {
     @Transactional
     public String extendRental(Long rentalId) {
         Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
-
         if (rentalOpt.isEmpty()) {
             return "Rental not found!";
         }
-
         Rental rental = rentalOpt.get();
         Users user = rental.getBorrower();
         Vehicle vehicle = rental.getVehicle();
 
-        // 🚗 **Check if the rental is already returned**
         if (rental.isReturned()) {
             return "Cannot extend! Vehicle is already returned.";
         }
 
-        // 🚗 **Check if the rental can be extended (Max: 2 times)**
         if (rental.getExtensionCount() >= 2) {
             return "Rental extension limit reached!";
         }
 
-        // 🚗 **Check if return date is null and set a default value**
         if (rental.getReturnDate() == null) {
             rental.setReturnDate(LocalDate.now().plusDays(1)); // Fixing Null Issue
         }
 
-        // 🚗 **Calculate Additional Cost**
-        double additionalCost = vehicle.getRentalPrice();
+       double additionalCost = vehicle.getRentalPrice();
 
-        // 🚗 **Check if user has enough security deposit**
         if (user.getSecurityDeposit() < additionalCost) {
             return "Insufficient security deposit! Required: ₹" + additionalCost + ", Available: ₹" + user.getSecurityDeposit();
         }
 
-        // 🚗 **Deduct additional rental cost from security deposit**
         user.setSecurityDeposit(user.getSecurityDeposit() - (int) additionalCost);
         userRepository.save(user);
 
-        // 🚗 **Extend Return Date & Update Cost**
         rental.setReturnDate(rental.getReturnDate().plusDays(1));
         rental.setExtensionCount(rental.getExtensionCount() + 1);
         rental.setFineAmount(rental.getFineAmount() + additionalCost); // Add cost to total rental amount
@@ -174,72 +155,73 @@ public class RentalService {
         return userOpt.map(rentalRepository::findByBorrower).orElse(null);
     }
 
-//    @Transactional
-//    public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, boolean paidByCash) {
-//        Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
-//
-//        if (rentalOpt.isEmpty()) {
-//            return "Rental not found!";
-//        }
-//
-//        Rental rental = rentalOpt.get();
-//        Vehicle vehicle = rental.getVehicle();
-//        Users user = rental.getBorrower();
-//
-//        if (rental.isReturned()) {
-//            return "Vehicle is already returned!";
-//        }
-//
-//        int fineAmount = 0;
-//
-//        // 🚗 **Fine for exceeding 500 KM per day**
-//        if (kmsDriven > 500) {
-//            fineAmount += vehicle.getRentalPrice() * 0.15;
-//        }
-//
-//        // 🚗 **Fine based on Damage Level**
-//        switch (damageLevel.toUpperCase()) {
-//            case "LOW":
-//                fineAmount += vehicle.getRentalPrice() * 0.20;
-//                break;
-//            case "MEDIUM":
-//                fineAmount += vehicle.getRentalPrice() * 0.50;
-//                break;
-//            case "HIGH":
-//                fineAmount += vehicle.getRentalPrice() * 0.75;
-//                break;
-//            case "NONE":
-//                break;
-//            default:
-//                return "Invalid damage level! Choose LOW, MEDIUM, HIGH, or NONE.";
-//        }
-//
-//        // 🚗 **Deduct Fine from Security Deposit if unpaid**
-//        if (!paidByCash) {
-//            if (user.getSecurityDeposit() < fineAmount) {
-//                return "Insufficient security deposit! Fine amount: ₹" + fineAmount;
-//            }
-//            user.setSecurityDeposit(user.getSecurityDeposit() - fineAmount);
-//            userRepository.save(user);
-//        }
-//
-//        // 🚗 **Mark Vehicle as Returned**
-//        rental.setReturned(true);
-//        rental.setFineAmount(fineAmount);
-//        rental.setReturnDate(LocalDate.now());
-//        rentalRepository.save(rental);
-//
-//        // 🚗 **Update Vehicle KMs and Check for Service**
-//        vehicle.setTotalKmsDriven(vehicle.getTotalKmsDriven() + kmsDriven);
-//        if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getTotalKmsDriven() >= 1500) ||
-//                (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getTotalKmsDriven() >= 3000)) {
-//            vehicle.setNeedsService(true);
-//        }
-//
-//        // 🚗 **Increase Vehicle Availability**
-//        vehicle.setAvailableCount(vehicle.getAvailableCount() + 1);
-//        vehicleRepository.save(vehicle);
-//
-//        return "Vehicle returned successfully! Fine Amount: ₹" + fineAmount;
-//    }
+    @Transactional
+    public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, boolean paidByCash) {
+        Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
+        if (rentalOpt.isEmpty()) {
+            return "Rental not found!";
+        }
+        Rental rental = rentalOpt.get();
+        Vehicle vehicle = rental.getVehicle();
+        Users user = rental.getBorrower();
+        if (rental.isReturned()) {
+            return "Vehicle is already returned!";
+        }
+        int fineAmount = 0;
+        int baseDeposit = 30000;
+        if (kmsDriven > 500) {
+            fineAmount += vehicle.getRentalPrice() * 0.15;
+        }
+
+        switch (damageLevel.toUpperCase()) {
+            case "LOW":
+                fineAmount += baseDeposit * 0.20; // 20% of ₹30000
+                break;
+            case "MEDIUM":
+                fineAmount += baseDeposit * 0.50; // 50% of ₹30000
+                break;
+            case "HIGH":
+                fineAmount += baseDeposit * 0.75; // 75% of ₹30000
+                break;
+            case "NONE":
+                break;
+            default:
+                return "Invalid damage level! Choose LOW, MEDIUM, HIGH, or NONE.";
+        }
+        if (!paidByCash) {
+            if (user.getSecurityDeposit() < fineAmount) {
+                return "Insufficient security deposit! Fine amount: ₹" + fineAmount;
+            }
+            user.setSecurityDeposit(user.getSecurityDeposit() - fineAmount);
+        }
+        userRepository.save(user);
+
+        rental.setReturned(true);
+        rental.setFineAmount(fineAmount);
+        rental.setReturnDate(LocalDate.now());
+        rentalRepository.save(rental);
+
+        vehicle.setTotalKmsDriven(vehicle.getTotalKmsDriven() + kmsDriven);
+        if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getTotalKmsDriven() >= 1500) ||
+                (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getTotalKmsDriven() >= 3000)) {
+            vehicle.setNeedsService(true);
+        }
+
+        vehicle.setAvailableCount(vehicle.getAvailableCount() + 1);
+        vehicleRepository.save(vehicle);
+        return "Vehicle returned successfully! Fine Amount: ₹" + fineAmount +
+                " | Remaining Security Deposit: ₹" + user.getSecurityDeposit();
+    }
+
+    @Transactional
+    public List<Rental> getAllRentedVehicles() {
+        return rentalRepository.findAll();
+    }
+
+    @Transactional
+    public List<Rental> getUnreturnedVehicles() {
+        return rentalRepository.findByIsReturnedFalse();
+    }
+
+
 }
