@@ -16,10 +16,33 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
-    @PreAuthorize("hasRole('RENTER')")
+    @PostMapping("/checkout")
+    public ResponseEntity<String> checkoutCart(@RequestParam Long userId) {
+        String response = rentalService.checkoutCart(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/extend")
+    public ResponseEntity<String> extendRental(@RequestParam Long rentalId) {
+        String response = rentalService.extendRental(rentalId);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/history")
     public ResponseEntity<List<Rental>> rentalHistory(@RequestParam Long userId) {
         return ResponseEntity.ok(rentalService.getRentalHistory(userId));
     }
+
+//    @PostMapping("/return")
+//    public ResponseEntity<String> returnVehicle(
+//            @RequestParam Long rentalId,
+//            @RequestParam int kmsDriven,
+//            @RequestParam String damageLevel,
+//            @RequestParam boolean paidByCash) {
+//
+//        String response = rentalService.returnVehicle(rentalId, kmsDriven, damageLevel, paidByCash);
+//        return ResponseEntity.ok(response);
+//    }
+
 
 }

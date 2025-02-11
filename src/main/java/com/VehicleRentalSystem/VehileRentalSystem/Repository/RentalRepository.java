@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     List<Rental> findByBorrower(Users users); // Remove @NotNull
+    List<Rental> findByBorrowerAndIsReturnedFalse(Users borrower);
 }
 

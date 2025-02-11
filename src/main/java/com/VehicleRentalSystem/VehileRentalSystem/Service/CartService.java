@@ -52,44 +52,26 @@ public class CartService {
         Optional<Users> userOpt = userRepository.findById(userId);
         return userOpt.map(cartRepository::findByRenter).orElse(null);
     }
-
     @Transactional
-    public String checkoutCart(Long userId) {
+    public String removeFromCart(Long userId, Long vehicleId) {
         Optional<Users> userOpt = userRepository.findById(userId);
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleId);
 
-        if (userOpt.isEmpty()) {
-            return "User not found!";
+        if (userOpt.isEmpty() || vehicleOpt.isEmpty()) {
+            return "User or Vehicle not found!";
         }
 
         Users user = userOpt.get();
-        List<Cart> cartItems = cartRepository.findByRenter(user);
+        Vehicle vehicle = vehicleOpt.get();
 
-        if (cartItems.isEmpty()) {
-            return "Cart is empty!";
+        Optional<Cart> cartItem = cartRepository.findByRenterAndVehicle(user, vehicle);
+
+        if (cartItem.isPresent()) {
+            cartRepository.delete(cartItem.get());
+            return "Vehicle removed from cart successfully!";
+        } else {
+            return "Vehicle not found in cart!";
         }
-
-        for (Cart cart : cartItems) {
-            Vehicle vehicle = cart.getVehicle();
-
-            if (vehicle.getAvailableCount() <= 0) {
-                return "Vehicle " + vehicle.getName() + " is not available!";
-            }
-
-            // Deduct vehicle count
-            vehicle.setAvailableCount(vehicle.getAvailableCount() - 1);
-            vehicleRepository.save(vehicle);
-
-            // Create rental record
-            Rental rental = new Rental();
-            rental.setBorrower(user);
-            rental.setVehicle(vehicle);
-            rental.setRentalDate(LocalDate.now());
-            rental.setReturned(false);
-            rentalRepository.save(rental);
-        }
-
-        // Clear cart after checkout
-        cartRepository.deleteByRenter(user);
-        return "Checkout successful! Vehicles rented.";
     }
+
 }

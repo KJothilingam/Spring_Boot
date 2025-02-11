@@ -16,18 +16,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Rental {
-    @Override
-    public String toString() {
-        return "Rental{" +
-                "id=" + id +
-                ", borrower=" + borrower +
-                ", vehicle=" + vehicle +
-                ", rentalDate=" + rentalDate +
-                ", returnDate=" + returnDate +
-                ", fineAmount=" + fineAmount +
-                ", isReturned=" + isReturned +
-                '}';
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +31,29 @@ public class Rental {
     private LocalDate returnDate;
     private double fineAmount;
     private boolean isReturned;
+    private int extensionCount;
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "id=" + id +
+                ", borrower=" + borrower +
+                ", vehicle=" + vehicle +
+                ", rentalDate=" + rentalDate +
+                ", returnDate=" + returnDate +
+                ", fineAmount=" + fineAmount +
+                ", isReturned=" + isReturned +
+                ", extensionCount=" + extensionCount +
+                '}';
+    }
+
+    public int getExtensionCount() {
+        return extensionCount;
+    }
+
+    public void setExtensionCount(int extensionCount) {
+        this.extensionCount = extensionCount;
+    }
 
     public Long getId() {
         return id;
