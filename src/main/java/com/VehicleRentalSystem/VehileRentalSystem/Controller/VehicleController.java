@@ -29,7 +29,7 @@ public class VehicleController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public String addVehicle(@RequestBody Vehicle vehicle) {
-//        vehicleService.addVehicle(vehicle);
+        vehicleService.addVehicle(vehicle);
         return "Vehicle added successfully!";
     }
 
@@ -43,6 +43,7 @@ public class VehicleController {
             return ResponseEntity.badRequest().body("Vehicle not found!");
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<String> updateVehicle(@RequestBody Vehicle vehicle) {
@@ -58,16 +59,29 @@ public class VehicleController {
         return ResponseEntity.ok("Vehicle updated successfully!");
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<List<Vehicle>> searchVehicles(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String numberPlate,
             @RequestParam(required = false) Integer availableCount,
             @RequestParam(required = false, defaultValue = "name") String sortBy) {
-
         List<Vehicle> vehicles = vehicleService.searchVehicles(name, numberPlate, availableCount, sortBy);
         return ResponseEntity.ok(vehicles);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/markForService")
+    public ResponseEntity<List<Vehicle>> markVehiclesForService() {
+        List<Vehicle> vehicles = vehicleService.markVehiclesForService();
+        return ResponseEntity.ok(vehicles);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/service/{vehicleId}")
+    public ResponseEntity<String> serviceVehicle(@PathVariable Long vehicleId) {
+        String response = vehicleService.serviceVehicle(vehicleId);
+        return ResponseEntity.ok(response);
     }
 
 

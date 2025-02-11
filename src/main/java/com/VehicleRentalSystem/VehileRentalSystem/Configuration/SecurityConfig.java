@@ -34,7 +34,17 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable()) // Disable CSRF (since we're using JWT)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/login", "/register").permitAll()  // Public endpoints
-                        .requestMatchers("/update-deposit/{userId}","/vehicles/add", "/vehicles/update", "/vehicles/delete").hasRole("ADMIN") // Admin only
+//                        .requestMatchers(
+//                                "/update-deposit/{userId}",
+//                                "/vehicles/add", "/vehicles/update",
+//                                "/vehicles/delete").hasRole("ADMIN") // Admin only
+                                .requestMatchers(
+                                        "/update-deposit/{userId}",
+                                        "/vehicles/add", "/vehicles/update",
+                                        "/vehicles/delete",
+                                        "/vehicles/service/{vehicleId}",
+                                        "/vehicles/markForService"
+                                ).hasRole("ADMIN")
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .httpBasic(customizer -> customizer.disable()) // Disable default login form
