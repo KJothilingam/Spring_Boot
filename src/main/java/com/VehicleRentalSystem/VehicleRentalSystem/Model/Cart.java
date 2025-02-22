@@ -1,11 +1,22 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Model;
+package com.VehicleRentalSystem.VehicleRentalSystem.Model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "cart")
 public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users renter;
+
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
     @Override
     public String toString() {
         return "Cart{" +
@@ -39,16 +50,5 @@ public class Cart {
         this.vehicle = vehicle;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users renter;
-
-    @ManyToOne
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
 }
 

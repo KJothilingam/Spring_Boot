@@ -1,16 +1,16 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Service;
+package com.VehicleRentalSystem.VehicleRentalSystem.Service;
 
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Rental;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Vehicle;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.CartRepository;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.UserRepository;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.RentalRepository;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.VehicleRepository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Rental;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Vehicle;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.CartRepository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.UserRepository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.RentalRepository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Cart;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Cart;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -151,7 +151,7 @@ public class RentalService {
     }
 
     public List<Rental> getRentalHistory(Long userId) {
-        Optional<Users> userOpt = userRepository.findById(userId);
+        Optional<Users>  userOpt = userRepository.findById(userId);
         return userOpt.map(rentalRepository::findByBorrower).orElse(null);
     }
 

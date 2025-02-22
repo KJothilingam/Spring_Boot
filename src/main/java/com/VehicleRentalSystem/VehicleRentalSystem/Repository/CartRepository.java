@@ -1,7 +1,7 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Repository;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Cart;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Vehicle;
+package com.VehicleRentalSystem.VehicleRentalSystem.Repository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Cart;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Controller;
+package com.VehicleRentalSystem.VehicleRentalSystem.Controller;
 
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
-import com.VehicleRentalSystem.VehileRentalSystem.Service.UserService;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
+import com.VehicleRentalSystem.VehicleRentalSystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

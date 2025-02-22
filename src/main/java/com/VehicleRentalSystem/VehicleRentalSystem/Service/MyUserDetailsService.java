@@ -1,7 +1,6 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Service;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.UserPrincipal;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.UserRepository;
+package com.VehicleRentalSystem.VehicleRentalSystem.Service;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

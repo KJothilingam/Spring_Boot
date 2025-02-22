@@ -1,6 +1,5 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Service;
+package com.VehicleRentalSystem.VehicleRentalSystem.Service;
 
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

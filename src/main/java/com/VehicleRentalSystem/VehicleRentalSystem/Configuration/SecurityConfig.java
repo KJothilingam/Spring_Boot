@@ -1,19 +1,16 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Configuration;
+package com.VehicleRentalSystem.VehicleRentalSystem.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -29,15 +26,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http
                 .csrf(customizer -> customizer.disable()) // Disable CSRF (since we're using JWT)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll()  // Public endpoints
-//                        .requestMatchers(
-//                                "/update-deposit/{userId}",
-//                                "/vehicles/add", "/vehicles/update",
-//                                "/vehicles/delete").hasRole("ADMIN") // Admin only
+                        .requestMatchers("/login", "/register").permitAll()
                                 .requestMatchers(
                                         "/update-deposit/{userId}",
                                         "/vehicles/add", "/vehicles/update",

@@ -1,4 +1,4 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Model;
+package com.VehicleRentalSystem.VehicleRentalSystem.Model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

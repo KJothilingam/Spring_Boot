@@ -1,8 +1,7 @@
-package com.VehicleRentalSystem.VehileRentalSystem.Service;
+package com.VehicleRentalSystem.VehicleRentalSystem.Service;
 
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Users;
-import com.VehicleRentalSystem.VehileRentalSystem.Model.Vehicle;
-import com.VehicleRentalSystem.VehileRentalSystem.Repository.VehicleRepository;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Vehicle;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
