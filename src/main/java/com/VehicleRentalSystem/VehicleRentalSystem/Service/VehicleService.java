@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 @Service
 public class VehicleService {
 
     @Autowired
     private VehicleRepository repository;
+
+    public List<Vehicle> getVehiclesByIds(List<Long> ids) {
+        return repository.findAllById(ids);
+    }
 
     @Transactional
     public List<Vehicle> markVehiclesForService() {
@@ -62,9 +66,44 @@ public class VehicleService {
         return repository.findAll();
     }
 
+//    public Vehicle addVehicle(Vehicle vehicle) {
+//        return repository.save(vehicle);
+//    }
+public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
+    Optional<Vehicle> existingVehicleOptional = repository.findById(id);
+
+    if (existingVehicleOptional.isPresent()) {
+        Vehicle existingVehicle = existingVehicleOptional.get();
+
+        existingVehicle.setAvailable(updatedVehicle.getAvailable());
+        existingVehicle.setName(updatedVehicle.getName());
+        existingVehicle.setNeedsService(updatedVehicle.isNeedsService());
+        existingVehicle.setNumberPlate(updatedVehicle.getNumberPlate());
+        existingVehicle.setRentalPrice(updatedVehicle.getRentalPrice());
+        existingVehicle.setTotalKmsDriven(updatedVehicle.getTotalKmsDriven());
+        existingVehicle.setType(updatedVehicle.getType());
+        existingVehicle.setLastServiceAt(updatedVehicle.getLastServiceAt());
+        existingVehicle.setImageUrl(updatedVehicle.getImageUrl());
+
+        return repository.save(existingVehicle); // Save and return updated vehicle
+    } else {
+        throw new RuntimeException("Vehicle not found with ID: " + id);
+    }
+}
+
+public boolean deleteVehicle(Long id) {
+    if (repository.existsById(id)) {
+        repository.deleteById(id);
+        return true;
+    }
+    return false;
+}
+
     public Vehicle addVehicle(Vehicle vehicle) {
+        System.out.println("Saving vehicle: " + vehicle);
         return repository.save(vehicle);
     }
+
 
     public boolean existsById(Long id) {
         return repository.existsById(id);
@@ -90,9 +129,11 @@ public class VehicleService {
             return repository.findByNameContainingIgnoreCase(name, sort);
         } else if (numberPlate != null) {
             return repository.findByNumberPlateContainingIgnoreCase(numberPlate, sort);
-        } else if (availableCount != null) {
-            return repository.findByAvailableCountGreaterThanEqual(availableCount, sort);
-        } else {
+        }
+//        else if (availableCount != null) {
+//            return repository.findByAvailableCountGreaterThanEqual(availableCount, sort);
+//        }
+        else {
             return repository.findAll(sort);
         }
     }

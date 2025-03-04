@@ -7,8 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    List<Cart> findByRenter(Users renter);
-    void deleteByRenter(Users renter);
-    Optional<Cart> findByRenterAndVehicle(Users renter, Vehicle vehicle);
 
+    List<Cart> findByUser(Users user); // ✅ Use user instead of renter
+
+    List<Cart> findByUser_UserId(Long userId);
+    void deleteByUser_UserId(Long userId);
+
+//    List<Cart> findByUser(Users user);
+
+    Optional<Cart> findByUserAndVehicle(Users user, Vehicle vehicle);
 }

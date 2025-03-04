@@ -1,45 +1,39 @@
-package com.VehicleRentalSystem.VehicleRentalSystem.Model;
+package com.VehicleRentalSystem.VehicleRentalSystem.Model;//package com.VehicleRentalSystem.VehicleRentalSystem.Entity;
 
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
+import com.VehicleRentalSystem.VehicleRentalSystem.Model.Vehicle;
 import jakarta.persistence.*;
-
 @Entity
-@Table(name = "cart")
 public class Cart {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Users renter;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", renter=" + renter +
-                ", vehicle=" + vehicle +
-                '}';
+    // ✅ Add this constructor
+    public Cart(Users user, Vehicle vehicle) {
+        this.user = user;
+        this.vehicle = vehicle;
     }
 
-    public Long getId() {
-        return id;
+    // ✅ Default constructor (needed for JPA)
+    public Cart() {}
+
+    // ✅ Getters and Setters
+    public Users getUser() {
+        return user;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Users getRenter() {
-        return renter;
-    }
-
-    public void setRenter(Users renter) {
-        this.renter = renter;
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     public Vehicle getVehicle() {
@@ -50,5 +44,8 @@ public class Cart {
         this.vehicle = vehicle;
     }
 
+    // ✅ Add this method if you need to fetch vehicleId directly
+    public Long getVehicleId() {
+        return vehicle != null ? vehicle.getId() : null;
+    }
 }
-

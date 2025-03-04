@@ -9,10 +9,13 @@ import com.VehicleRentalSystem.VehicleRentalSystem.Repository.RentalRepository;
 import com.VehicleRentalSystem.VehicleRentalSystem.Repository.UserRepository;
 import com.VehicleRentalSystem.VehicleRentalSystem.Repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -29,40 +32,77 @@ public class CartService {
     @Autowired
     private RentalRepository rentalRepository;
 
-    public String addToCart(Long userId, Long vehicleId) {
+    @Transactional
+    public ResponseEntity<String> addToCart(Long userId, Long vehicleId) {
         Optional<Users> userOpt = userRepository.findById(userId);
         Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleId);
+
         if (userOpt.isEmpty() || vehicleOpt.isEmpty()) {
-            return "User or Vehicle not found!";
+            return ResponseEntity.badRequest().body("❌ User or Vehicle not found!");
         }
-        Cart cart = new Cart();
-        cart.setRenter(userOpt.get());
-        cart.setVehicle(vehicleOpt.get());
+
+        Users user = userOpt.get();
+        Vehicle vehicle = vehicleOpt.get();
+
+        // 🔥 Check if the vehicle is already in the cart for the user
+        if (cartRepository.findByUserAndVehicle(user, vehicle).isPresent()) {
+            return ResponseEntity.badRequest().body("⚠️ Vehicle is already in the cart!");
+        }
+
+        // ✅ Add to cart only if not already present
+        Cart cart = new Cart(user, vehicle);
         cartRepository.save(cart);
-        return "Vehicle added to cart!";
+
+        return ResponseEntity.ok("✅ Vehicle added to cart successfully!");
     }
+
+    // ✅ Get all cart items for a user
+    public List<Cart> getCartByUserId(Long userId) {
+        return cartRepository.findByUser_UserId(userId);
+    }
+
+    // ✅ Remove a specific item from cart
+//    public void removeCartItem(Long cartId) {
+//        cartRepository.deleteById(cartId);
+//    }
+
+    // ✅ Clear all items from user's cart
+//    public void clearCart(Long userId) {
+//        cartRepository.deleteByUser_UserId(userId);
+//    }
 
     public List<Cart> viewCart(Long userId) {
         Optional<Users> userOpt = userRepository.findById(userId);
-        return userOpt.map(cartRepository::findByRenter).orElse(null);
+        return userOpt.map(cartRepository::findByUser).orElse(null); // ✅ Change from findByRenter to findByUser
     }
-
     @Transactional
     public String removeFromCart(Long userId, Long vehicleId) {
         Optional<Users> userOpt = userRepository.findById(userId);
         Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleId);
+
         if (userOpt.isEmpty() || vehicleOpt.isEmpty()) {
-            return "User or Vehicle not found!";
+            return "❌ User or Vehicle not found!";
         }
+
         Users user = userOpt.get();
         Vehicle vehicle = vehicleOpt.get();
-        Optional<Cart> cartItem = cartRepository.findByRenterAndVehicle(user, vehicle);
+        Optional<Cart> cartItem = cartRepository.findByUserAndVehicle(user, vehicle);
+
         if (cartItem.isPresent()) {
-            cartRepository.delete(cartItem.get());
-            return "Vehicle removed from cart successfully!";
+            cartRepository.delete(cartItem.get());  // ✅ Correct delete operation
+            return "✅ Vehicle removed from cart successfully!";
         } else {
-            return "Vehicle not found in cart!";
+            return "⚠️ Vehicle not found in cart!";
         }
+    }
+
+
+    // ✅ Get vehicles in cart
+    public List<Vehicle> getVehiclesInCart(Long userId) {
+        List<Cart> carts = cartRepository.findByUser_UserId(userId);
+        return carts.stream()
+                .map(cart -> vehicleRepository.findById(cart.getVehicleId()).orElse(null))
+                .collect(Collectors.toList());
     }
 
 }

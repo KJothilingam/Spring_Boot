@@ -1,6 +1,5 @@
 package com.VehicleRentalSystem.VehicleRentalSystem.Model;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,7 +8,7 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int availableCount;
+    private boolean available;
     private String name;
     private boolean needsService;
     private String numberPlate;
@@ -17,12 +16,13 @@ public class Vehicle {
     private int totalKmsDriven;
     private String type;
     private int lastServiceAt;
+    private String imageUrl; // Added field for image URL
 
     @Override
     public String toString() {
         return "Vehicle{" +
                 "id=" + id +
-                ", availableCount=" + availableCount +
+                ", available=" + available +
                 ", name='" + name + '\'' +
                 ", needsService=" + needsService +
                 ", numberPlate='" + numberPlate + '\'' +
@@ -30,6 +30,7 @@ public class Vehicle {
                 ", totalKmsDriven=" + totalKmsDriven +
                 ", type='" + type + '\'' +
                 ", lastServiceAt=" + lastServiceAt +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 
@@ -41,12 +42,12 @@ public class Vehicle {
         this.id = id;
     }
 
-    public int getAvailableCount() {
-        return availableCount;
+    public boolean getAvailable() {
+        return available;
     }
 
-    public void setAvailableCount(int availableCount) {
-        this.availableCount = availableCount;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public String getName() {
@@ -103,5 +104,13 @@ public class Vehicle {
 
     public void setLastServiceAt(int lastServiceAt) {
         this.lastServiceAt = lastServiceAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

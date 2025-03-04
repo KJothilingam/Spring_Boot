@@ -17,6 +17,20 @@ public class Users {
     private String role;
     private int securityDeposit;
     private String userName;
+    private String ImageUrl;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getImageUrl() {
+        return ImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -84,6 +98,7 @@ public class Users {
                 ", role='" + role + '\'' +
                 ", securityDeposit=" + securityDeposit +
                 ", userName='" + userName + '\'' +
+                ", ImageUrl='" + ImageUrl + '\'' +
                 '}';
     }
 }

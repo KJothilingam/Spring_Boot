@@ -22,7 +22,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     List<Vehicle> findByNumberPlateContainingIgnoreCase(String numberPlate, Sort sort);
 
-    List<Vehicle> findByAvailableCountGreaterThanEqual(Integer availableCount, Sort sort);
+//    List<Vehicle> findByAvailableCountGreaterThanEqual(Integer availableCount, Sort sort);
+
+    List<Vehicle> findByAvailableTrue(Sort sort);
 
 
 }

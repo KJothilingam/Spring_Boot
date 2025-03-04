@@ -14,5 +14,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     List<Rental> findByIsReturnedFalse();
 
+    List<Rental> findByBorrowerUserId(Long borrowerUserId);
+
+//    List<Rental> findByUserId( borrower_userId);
+
+//    List<Rental> findByBorrowerUserId(Long borrowerUserId);
 }
 

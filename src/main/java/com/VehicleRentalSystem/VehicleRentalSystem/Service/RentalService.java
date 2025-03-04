@@ -28,89 +28,89 @@ public class RentalService {
     @Autowired
     private UserRepository userRepository;
 
-
-    @Transactional
-    public String checkoutCart(Long userId) {
-        Optional<Users> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty()) {
-            return "User not found!";
-        }
-        Users user = userOpt.get();
-        List<Cart> cartItems = cartRepository.findByRenter(user);
-        if (cartItems.isEmpty()) {
-            return "Cart is empty!";
-        }
-
-        List<Rental> activeRentals = rentalRepository.findByBorrowerAndIsReturnedFalse(user);
-        boolean hasBike = false;
-        boolean hasCar = false;
-        for (Rental rental : activeRentals) {
-            if (rental.getVehicle().getType().equalsIgnoreCase("BIKE")) {
-                hasBike = true;
-            } else if (rental.getVehicle().getType().equalsIgnoreCase("CAR")) {
-                hasCar = true;
-            }
-        }
-
-        int totalRentalCost = 0;
-        boolean rentingBike = false;
-        boolean rentingCar = false;
-        LocalDate returnDate = LocalDate.now().plusDays(1); // Set initial return date (1 day rental)
-
-        for (Cart cart : cartItems) {
-            Vehicle vehicle = cart.getVehicle();
-
-            if (vehicle.getAvailableCount() <= 0) {
-                return "Vehicle " + vehicle.getName() + " is not available!";
-            }
-
-            if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getLastServiceAt() >= 1500) ||
-                    (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getLastServiceAt() >= 3000)) {
-                return "Vehicle " + vehicle.getName() + " needs servicing!";
-            }
-
-            if (vehicle.getType().equalsIgnoreCase("BIKE")) {
-                if (hasBike || rentingBike) {
-                    return "You can only rent one Bike at a time!";
-                }
-                rentingBike = true;
-            } else if (vehicle.getType().equalsIgnoreCase("CAR")) {
-                if (hasCar || rentingCar) {
-                    return "You can only rent one Car at a time!";
-                }
-                rentingCar = true;
-            }
-
-            totalRentalCost += vehicle.getRentalPrice();
-        }
-
-        if (user.getSecurityDeposit() < totalRentalCost) {
-            return "Insufficient security deposit! Required: ₹" + totalRentalCost + ", Available: ₹" + user.getSecurityDeposit();
-        }
-
-        user.setSecurityDeposit(user.getSecurityDeposit() - totalRentalCost);
-        userRepository.save(user);
-
-        String vehicleRent = "";
-        for (Cart cart : cartItems) {
-            Vehicle vehicle = cart.getVehicle();
-            vehicleRent += " " + vehicle;
-            vehicle.setAvailableCount(vehicle.getAvailableCount() - 1);
-            vehicleRepository.save(vehicle);
-
-            Rental rental = new Rental();
-            rental.setBorrower(user);
-            rental.setVehicle(vehicle);
-            rental.setRentalDate(LocalDate.now());
-            rental.setReturnDate(returnDate);
-            rental.setReturned(false);
-            rental.setExtensionCount(0);
-            rentalRepository.save(rental);
-        }
-        cartRepository.deleteByRenter(user);
-        return "Checkout successful! Total Rental Cost: ₹" + totalRentalCost + " | Return Date: " + returnDate + " | Rented-> " + vehicleRent;
-    }
-
+//
+//    @Transactional
+//    public String checkoutCart(Long userId) {
+//        Optional<Users> userOpt = userRepository.findById(userId);
+//        if (userOpt.isEmpty()) {
+//            return "User not found!";
+//        }
+//        Users user = userOpt.get();
+//        List<Cart> cartItems = cartRepository.findByRenter(user);
+//        if (cartItems.isEmpty()) {
+//            return "Cart is empty!";
+//        }
+//
+//        List<Rental> activeRentals = rentalRepository.findByBorrowerAndIsReturnedFalse(user);
+//        boolean hasBike = false;
+//        boolean hasCar = false;
+//        for (Rental rental : activeRentals) {
+//            if (rental.getVehicle().getType().equalsIgnoreCase("BIKE")) {
+//                hasBike = true;
+//            } else if (rental.getVehicle().getType().equalsIgnoreCase("CAR")) {
+//                hasCar = true;
+//            }
+//        }
+//
+//        int totalRentalCost = 0;
+//        boolean rentingBike = false;
+//        boolean rentingCar = false;
+//        LocalDate returnDate = LocalDate.now().plusDays(1); // Set initial return date (1 day rental)
+//
+//        for (Cart cart : cartItems) {
+//            Vehicle vehicle = cart.getVehicle();
+//
+//            if (vehicle.getAvailableCount() <= 0) {
+//                return "Vehicle " + vehicle.getName() + " is not available!";
+//            }
+//
+//            if ((vehicle.getType().equalsIgnoreCase("BIKE") && vehicle.getLastServiceAt() >= 1500) ||
+//                    (vehicle.getType().equalsIgnoreCase("CAR") && vehicle.getLastServiceAt() >= 3000)) {
+//                return "Vehicle " + vehicle.getName() + " needs servicing!";
+//            }
+//
+//            if (vehicle.getType().equalsIgnoreCase("BIKE")) {
+//                if (hasBike || rentingBike) {
+//                    return "You can only rent one Bike at a time!";
+//                }
+//                rentingBike = true;
+//            } else if (vehicle.getType().equalsIgnoreCase("CAR")) {
+//                if (hasCar || rentingCar) {
+//                    return "You can only rent one Car at a time!";
+//                }
+//                rentingCar = true;
+//            }
+//
+//            totalRentalCost += vehicle.getRentalPrice();
+//        }
+//
+//        if (user.getSecurityDeposit() < totalRentalCost) {
+//            return "Insufficient security deposit! Required: ₹" + totalRentalCost + ", Available: ₹" + user.getSecurityDeposit();
+//        }
+//
+//        user.setSecurityDeposit(user.getSecurityDeposit() - totalRentalCost);
+//        userRepository.save(user);
+//
+//        String vehicleRent = "";
+//        for (Cart cart : cartItems) {
+//            Vehicle vehicle = cart.getVehicle();
+//            vehicleRent += " " + vehicle;
+//            vehicle.setAvailableCount(vehicle.getAvailableCount() - 1);
+//            vehicleRepository.save(vehicle);
+//
+//            Rental rental = new Rental();
+//            rental.setBorrower(user);
+//            rental.setVehicle(vehicle);
+//            rental.setRentalDate(LocalDate.now());
+//            rental.setReturnDate(returnDate);
+//            rental.setReturned(false);
+//            rental.setExtensionCount(0);
+//            rentalRepository.save(rental);
+//        }
+//        cartRepository.deleteByRenter(user);
+//        return "Checkout successful! Total Rental Cost: ₹" + totalRentalCost + " | Return Date: " + returnDate + " | Rented-> " + vehicleRent;
+//    }
+//
     @Transactional
     public String extendRental(Long rentalId) {
         Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
@@ -133,7 +133,7 @@ public class RentalService {
             rental.setReturnDate(LocalDate.now().plusDays(1)); // Fixing Null Issue
         }
 
-       double additionalCost = vehicle.getRentalPrice();
+        double additionalCost = vehicle.getRentalPrice();
 
         if (user.getSecurityDeposit() < additionalCost) {
             return "Insufficient security deposit! Required: ₹" + additionalCost + ", Available: ₹" + user.getSecurityDeposit();
@@ -150,11 +150,11 @@ public class RentalService {
         return "Rental extended! New Return Date: " + rental.getReturnDate() + " | Additional Cost: ₹" + additionalCost;
     }
 
-    public List<Rental> getRentalHistory(Long userId) {
-        Optional<Users>  userOpt = userRepository.findById(userId);
-        return userOpt.map(rentalRepository::findByBorrower).orElse(null);
-    }
-
+//    public List<Rental> getRentalHistory(Long userId) {
+//        Optional<Users> userOpt = userRepository.findById(userId);
+//        return userOpt.map(rentalRepository::findByBorrower).orElse(null);
+//    }
+//
     @Transactional
     public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, boolean paidByCash) {
         Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
@@ -207,21 +207,109 @@ public class RentalService {
             vehicle.setNeedsService(true);
         }
 
-        vehicle.setAvailableCount(vehicle.getAvailableCount() + 1);
+        vehicle.setAvailable(true);
         vehicleRepository.save(vehicle);
         return "Vehicle returned successfully! Fine Amount: ₹" + fineAmount +
                 " | Remaining Security Deposit: ₹" + user.getSecurityDeposit();
     }
+//
+//    @Transactional
+//    public List<Rental> getAllRentedVehicles() {
+//        return rentalRepository.findAll();
+//    }
+//
+//    @Transactional
+//    public List<Rental> getUnreturnedVehicles() {
+//        return rentalRepository.findByIsReturnedFalse();
+//    }
+
 
     @Transactional
-    public List<Rental> getAllRentedVehicles() {
-        return rentalRepository.findAll();
+    public String rentVehicle(Long userId, Long vehicleId) {
+        Optional<Users> userOpt = userRepository.findById(userId);
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleId);
+
+        if (userOpt.isEmpty() || vehicleOpt.isEmpty()) {
+            return "❌ User or Vehicle not found!";
+        }
+
+        Users user = userOpt.get();
+        Vehicle vehicle = vehicleOpt.get();
+
+        Optional<Cart> cartOpt = cartRepository.findByUserAndVehicle(user, vehicle);
+        if (cartOpt.isEmpty()) {
+            return "❌ Vehicle not found in cart!";
+        }
+
+        // 🚫 Check if user already has an active rental of the same type
+        List<Rental> activeRentals = rentalRepository.findByBorrowerAndIsReturnedFalse(user);
+        boolean hasBike = false, hasCar = false;
+
+        for (Rental rental : activeRentals) {
+            if (rental.getVehicle().getType().equalsIgnoreCase("BIKE")) {
+                hasBike = true;
+            } else if (rental.getVehicle().getType().equalsIgnoreCase("CAR")) {
+                hasCar = true;
+            }
+        }
+
+        if (vehicle.getType().equalsIgnoreCase("BIKE") && hasBike) {
+            return "❌ You can only rent one bike at a time!";
+        }
+        if (vehicle.getType().equalsIgnoreCase("CAR") && hasCar) {
+            return "❌ You can only rent one car at a time!";
+        }
+
+        // 🚫 Check availability
+        if (!vehicle.getAvailable()) {
+            return "❌ Vehicle " + vehicle.getName() + " is not available!";
+        }
+
+        // 🚫 Check security deposit
+        int requiredDeposit = vehicle.getType().equalsIgnoreCase("BIKE") ? 3000 : 10000;
+        if (user.getSecurityDeposit() < requiredDeposit) {
+            return "❌ Insufficient security deposit! Required: ₹" + requiredDeposit;
+        }
+
+        // ✅ Deduct deposit & rent vehicle
+        user.setSecurityDeposit(user.getSecurityDeposit() - (int) vehicle.getRentalPrice());
+        userRepository.save(user);
+
+        vehicle.setAvailable(false); // Mark as unavailable
+        vehicleRepository.save(vehicle);
+
+        Rental rental = new Rental();
+        rental.setBorrower(user);
+        rental.setVehicle(vehicle);
+        rental.setRentalDate(LocalDate.now());
+        rental.setReturnDate(LocalDate.now().plusDays(1)); // One-day rental
+        rental.setReturned(false);
+        rental.setExtensionCount(0);
+        rentalRepository.save(rental);
+
+        // ✅ Only remove from cart if rental is successful
+        cartRepository.delete(cartOpt.get());
+
+        return "✅ Vehicle rented successfully! Rental Cost: ₹" + vehicle.getRentalPrice() +
+                " | Return Date: " + rental.getReturnDate();
     }
 
-    @Transactional
-    public List<Rental> getUnreturnedVehicles() {
+    public List<Rental> getAllOrders() {
         return rentalRepository.findByIsReturnedFalse();
     }
+
+    public List<Rental> getAllOrdersAdmin() {
+        return rentalRepository.findAll();
+    }
+    public List<Rental> getUserRentals(Long userId) {
+        return rentalRepository.findByBorrowerUserId(userId);
+    }
+
+//public List<Rental> getRentalsByUserId(Long userId) {
+//    return rentalRepository.findByBorrowerUserId(userId);
+//}
+
+
 
 
 }
