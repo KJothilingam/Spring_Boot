@@ -304,6 +304,14 @@ public class RentalService {
     public List<Rental> getUserRentals(Long userId) {
         return rentalRepository.findByBorrowerUserId(userId);
     }
+    public List<Rental> getUserActiveRentals(Long userId) {
+        return rentalRepository.findByBorrowerUserIdAndIsReturnedFalse(userId);
+    }
+
+    public List<Rental> getUserHistory(Long userId) {
+        return rentalRepository.findByBorrowerUserIdAndIsReturnedTrue(userId);
+    }
+
 
 //public List<Rental> getRentalsByUserId(Long userId) {
 //    return rentalRepository.findByBorrowerUserId(userId);

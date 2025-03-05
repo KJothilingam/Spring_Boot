@@ -1,6 +1,7 @@
 package com.VehicleRentalSystem.VehicleRentalSystem.Service;
 
 import com.VehicleRentalSystem.VehicleRentalSystem.Model.Vehicle;
+import com.VehicleRentalSystem.VehicleRentalSystem.Repository.RentalRepository;
 import com.VehicleRentalSystem.VehicleRentalSystem.Repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository repository;
+    @Autowired
+    private RentalRepository rentalRepository;
 
     public List<Vehicle> getVehiclesByIds(List<Long> ids) {
         return repository.findAllById(ids);
@@ -91,13 +94,27 @@ public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
     }
 }
 
-public boolean deleteVehicle(Long id) {
-    if (repository.existsById(id)) {
+//public boolean deleteVehicle(Long id) {
+//    if (repository.existsById(id)) {
+//        repository.deleteById(id);
+//        return true;
+//    }
+//    return false;
+//}
+    public boolean deleteVehicle(Long id) {
+        if (!repository.existsById(id)) {
+            return false;
+        }
+
+        long rentalCount = rentalRepository.countByVehicleId(id);
+        if (rentalCount > 0) {
+            throw new RuntimeException("Cannot delete vehicle. Active rentals exist.");
+        }
+
         repository.deleteById(id);
         return true;
     }
-    return false;
-}
+
 
     public Vehicle addVehicle(Vehicle vehicle) {
         System.out.println("Saving vehicle: " + vehicle);

@@ -21,9 +21,21 @@ public class  ordercontroller{
 //    public List<Rental> getAllOrders() {
 //        return rentalService.getAllOrders();
 //    }
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<Rental>> getUserOrders(@PathVariable Long userId) {
+//        return ResponseEntity.ok(rentalService.getUserRentals(userId));
+//    }
+
+
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Rental>> getUserOrders(@PathVariable Long userId) {
-        return ResponseEntity.ok(rentalService.getUserRentals(userId));
+    public ResponseEntity<List<Rental>> getUserActiveRentals(@PathVariable Long userId) {
+        List<Rental> rentals = rentalService.getUserActiveRentals(userId);
+        return ResponseEntity.ok(rentals);
     }
 
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<List<Rental>> getUserHistory(@PathVariable Long userId) {
+        List<Rental> rentals = rentalService.getUserHistory(userId);
+        return ResponseEntity.ok(rentals);
+    }
 }

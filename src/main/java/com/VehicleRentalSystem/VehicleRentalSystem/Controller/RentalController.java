@@ -97,6 +97,8 @@ public class RentalController {
     public ResponseEntity<List<Rental>> getAllRentals() {
         return ResponseEntity.ok(rentalService.getAllOrdersAdmin());
     }
+
+
 //@GetMapping("/{userId}")
 //public ResponseEntity<List<Rental>> getUserRentals(@PathVariable Long userId) {
 //    return ResponseEntity.ok(rentalService.getRentalsByUserId(userId));
