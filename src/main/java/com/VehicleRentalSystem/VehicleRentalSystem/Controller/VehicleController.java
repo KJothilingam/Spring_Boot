@@ -19,8 +19,6 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 public class VehicleController {
 
-//    @Autowired
-//    private JWTService jwtService;
 
     @Autowired
     private VehicleService vehicleService;
@@ -45,24 +43,17 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.findAll());
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @PostMapping("/add")
-//    public String addVehicle(@RequestBody Vehicle vehicle) {
-//        vehicleService.addVehicle(vehicle);
-//        return "Vehicle added successfully!";
-//    }
-@PostMapping("/add")
-    public ResponseEntity<Vehicle> addVehicle(@RequestBody Vehicle vehicle) {
-        Vehicle savedVehicle = vehicleService.addVehicle(vehicle);
-        return ResponseEntity.ok(savedVehicle);
-    }
+    @PostMapping("/add")
+        public ResponseEntity<Vehicle> addVehicle(@RequestBody Vehicle vehicle) {
+            Vehicle savedVehicle = vehicleService.addVehicle(vehicle);
+            return ResponseEntity.ok(savedVehicle);
+        }
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            // Save the file (dummy implementation, replace with actual storage logic)
+
             String fileUrl = "Imgs/" + file.getOriginalFilename();
-//            String fileUrl = "http://localhost:8080/uploads/" + file.getOriginalFilename();
             Map<String, String> response = new HashMap<>();
             response.put("message", "File uploaded successfully");
             response.put("fileUrl", fileUrl);
@@ -73,18 +64,6 @@ public class VehicleController {
         }
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<String> deleteVehicle(@RequestParam Long id) {
-//        if (vehicleService.existsById(id)) {
-//            vehicleService.deleteById(id);
-//            return ResponseEntity.ok("Vehicle deleted successfully!");
-//        } else {
-//            return ResponseEntity.badRequest().body("Vehicle not found!");
-//        }
-//    }
-
-//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<String> updateVehicle(@RequestBody Vehicle vehicle) {
         if (vehicle.getId() == null) {
@@ -109,7 +88,6 @@ public class VehicleController {
         return ResponseEntity.ok(vehicles);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/markForService")
     public ResponseEntity<List<Vehicle>> markVehiclesForService() {
         List<Vehicle> vehicles = vehicleService.markVehiclesForService();
@@ -117,16 +95,10 @@ public class VehicleController {
     }
 
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/service/{vehicleId}")
     public ResponseEntity<String> serviceVehicle(@PathVariable Long vehicleId) {
         String response = vehicleService.serviceVehicle(vehicleId);
         return ResponseEntity.ok(response);
     }
-
-
-
-
-
 
 }

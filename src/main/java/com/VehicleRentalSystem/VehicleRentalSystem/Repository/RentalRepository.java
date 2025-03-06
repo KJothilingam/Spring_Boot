@@ -9,11 +9,7 @@ import java.util.List;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
 
-
-    List<Rental> findByBorrower(Users borrower);
-
     List<Rental> findByBorrowerAndIsReturnedFalse(Users borrower);
-
     List<Rental> findByIsReturnedFalse();
     List<Rental> findByBorrowerUserId(Long borrowerUserId);
     List<Rental> findByBorrowerUserIdAndIsReturnedFalse(Long borrowerUserId);

@@ -69,38 +69,28 @@ public class VehicleService {
         return repository.findAll();
     }
 
-//    public Vehicle addVehicle(Vehicle vehicle) {
-//        return repository.save(vehicle);
-//    }
-public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
-    Optional<Vehicle> existingVehicleOptional = repository.findById(id);
+        public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
+            Optional<Vehicle> existingVehicleOptional = repository.findById(id);
 
-    if (existingVehicleOptional.isPresent()) {
-        Vehicle existingVehicle = existingVehicleOptional.get();
+            if (existingVehicleOptional.isPresent()) {
+                Vehicle existingVehicle = existingVehicleOptional.get();
 
-        existingVehicle.setAvailable(updatedVehicle.getAvailable());
-        existingVehicle.setName(updatedVehicle.getName());
-        existingVehicle.setNeedsService(updatedVehicle.isNeedsService());
-        existingVehicle.setNumberPlate(updatedVehicle.getNumberPlate());
-        existingVehicle.setRentalPrice(updatedVehicle.getRentalPrice());
-        existingVehicle.setTotalKmsDriven(updatedVehicle.getTotalKmsDriven());
-        existingVehicle.setType(updatedVehicle.getType());
-        existingVehicle.setLastServiceAt(updatedVehicle.getLastServiceAt());
-        existingVehicle.setImageUrl(updatedVehicle.getImageUrl());
+                existingVehicle.setAvailable(updatedVehicle.getAvailable());
+                existingVehicle.setName(updatedVehicle.getName());
+                existingVehicle.setNeedsService(updatedVehicle.isNeedsService());
+                existingVehicle.setNumberPlate(updatedVehicle.getNumberPlate());
+                existingVehicle.setRentalPrice(updatedVehicle.getRentalPrice());
+                existingVehicle.setTotalKmsDriven(updatedVehicle.getTotalKmsDriven());
+                existingVehicle.setType(updatedVehicle.getType());
+                existingVehicle.setLastServiceAt(updatedVehicle.getLastServiceAt());
+                existingVehicle.setImageUrl(updatedVehicle.getImageUrl());
 
-        return repository.save(existingVehicle); // Save and return updated vehicle
-    } else {
-        throw new RuntimeException("Vehicle not found with ID: " + id);
-    }
-}
+                return repository.save(existingVehicle); // Save and return updated vehicle
+            } else {
+                throw new RuntimeException("Vehicle not found with ID: " + id);
+            }
+        }
 
-//public boolean deleteVehicle(Long id) {
-//    if (repository.existsById(id)) {
-//        repository.deleteById(id);
-//        return true;
-//    }
-//    return false;
-//}
     public boolean deleteVehicle(Long id) {
         if (!repository.existsById(id)) {
             return false;
@@ -147,14 +137,9 @@ public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
         } else if (numberPlate != null) {
             return repository.findByNumberPlateContainingIgnoreCase(numberPlate, sort);
         }
-//        else if (availableCount != null) {
-//            return repository.findByAvailableCountGreaterThanEqual(availableCount, sort);
-//        }
         else {
             return repository.findAll(sort);
         }
     }
-
-
 
 }

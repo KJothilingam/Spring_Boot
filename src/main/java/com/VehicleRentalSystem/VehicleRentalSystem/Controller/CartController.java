@@ -26,20 +26,12 @@ public class CartController {
     @Autowired
     private RentalService rentalService;
 
-//    @PostMapping("/add")
-//    public ResponseEntity<String> addToCart(@RequestParam Long userId, @RequestParam Long vehicleId) {
-//        String response = cartService.addToCart(userId, vehicleId);
-//        return ResponseEntity.ok(response);
-//    }
-
-
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@RequestParam Long userId, @RequestParam Long vehicleId) {
         cartService.addToCart(userId, vehicleId);
-        return ResponseEntity.ok("✅ Vehicle added to cart successfully!"); // ✅ Explicit response
+        return ResponseEntity.ok("✅ Vehicle added to cart successfully!");
     }
 
-    // ✅ Get vehicles in the user's cart
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Vehicle>> getUserCart(@PathVariable Long userId) {
         List<Cart> cartItems = cartService.getCartByUserId(userId);
@@ -47,8 +39,6 @@ public class CartController {
         List<Vehicle> vehicles = vehicleService.getVehiclesByIds(vehicleIds);
         return ResponseEntity.ok(vehicles);
     }
-
-
 
     @GetMapping("/view")
     public ResponseEntity<List<Cart>> viewCart(@RequestParam Long userId) {
@@ -60,7 +50,5 @@ public class CartController {
         String response = cartService.removeFromCart(userId, vehicleId);
         return ResponseEntity.ok(response);
     }
-
-
 
 }

@@ -18,16 +18,13 @@ public class Cart {
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    // ✅ Add this constructor
     public Cart(Users user, Vehicle vehicle) {
         this.user = user;
         this.vehicle = vehicle;
     }
 
-    // ✅ Default constructor (needed for JPA)
     public Cart() {}
 
-    // ✅ Getters and Setters
     public Users getUser() {
         return user;
     }
@@ -44,7 +41,7 @@ public class Cart {
         this.vehicle = vehicle;
     }
 
-    // ✅ Add this method if you need to fetch vehicleId directly
+
     public Long getVehicleId() {
         return vehicle != null ? vehicle.getId() : null;
     }

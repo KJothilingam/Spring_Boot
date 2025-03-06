@@ -23,6 +23,15 @@ public class Rental {
     private double fineAmount;
     private boolean isReturned;
     private int extensionCount;
+    private int totalCost;
+
+    public int getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
+    }
 
     @Override
     public String toString() {
@@ -35,6 +44,7 @@ public class Rental {
                 ", fineAmount=" + fineAmount +
                 ", isReturned=" + isReturned +
                 ", extensionCount=" + extensionCount +
+                ", totalCost=" + totalCost +
                 '}';
     }
 

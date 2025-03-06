@@ -2,6 +2,7 @@ package com.VehicleRentalSystem.VehicleRentalSystem.Controller;
 
 import com.VehicleRentalSystem.VehicleRentalSystem.Model.Rental;
 import com.VehicleRentalSystem.VehicleRentalSystem.Service.RentalService;
+import com.VehicleRentalSystem.VehicleRentalSystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,15 @@ import java.util.List;
 public class  ordercontroller{
     @Autowired
     private RentalService rentalService;
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/user/security-deposit/{userId}")
+    public ResponseEntity<Double> getUserSecurityDeposit(@PathVariable Long userId) {
+        double deposit = userService.getUserSecurityDeposit(userId);
+        return ResponseEntity.ok(deposit);
+    }
+
 
 //    @GetMapping
 //    public List<Rental> getAllOrders() {

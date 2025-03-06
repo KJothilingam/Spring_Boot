@@ -44,32 +44,19 @@ public class CartService {
         Users user = userOpt.get();
         Vehicle vehicle = vehicleOpt.get();
 
-        // 🔥 Check if the vehicle is already in the cart for the user
         if (cartRepository.findByUserAndVehicle(user, vehicle).isPresent()) {
             return ResponseEntity.badRequest().body("⚠️ Vehicle is already in the cart!");
         }
 
-        // ✅ Add to cart only if not already present
         Cart cart = new Cart(user, vehicle);
         cartRepository.save(cart);
 
         return ResponseEntity.ok("✅ Vehicle added to cart successfully!");
     }
 
-    // ✅ Get all cart items for a user
     public List<Cart> getCartByUserId(Long userId) {
         return cartRepository.findByUser_UserId(userId);
     }
-
-    // ✅ Remove a specific item from cart
-//    public void removeCartItem(Long cartId) {
-//        cartRepository.deleteById(cartId);
-//    }
-
-    // ✅ Clear all items from user's cart
-//    public void clearCart(Long userId) {
-//        cartRepository.deleteByUser_UserId(userId);
-//    }
 
     public List<Cart> viewCart(Long userId) {
         Optional<Users> userOpt = userRepository.findById(userId);
@@ -97,7 +84,6 @@ public class CartService {
     }
 
 
-    // ✅ Get vehicles in cart
     public List<Vehicle> getVehiclesInCart(Long userId) {
         List<Cart> carts = cartRepository.findByUser_UserId(userId);
         return carts.stream()

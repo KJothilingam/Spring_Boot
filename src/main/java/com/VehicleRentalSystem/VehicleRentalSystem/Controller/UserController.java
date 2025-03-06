@@ -4,9 +4,7 @@ import com.VehicleRentalSystem.VehicleRentalSystem.Model.Users;
 import com.VehicleRentalSystem.VehicleRentalSystem.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +18,11 @@ public class UserController {
     @Autowired
     private UserService service;
 
-//    @PostMapping("/register")
-//    public Users register(@RequestBody Users user){
-//        System.out.println(user +" Getting Added ");
-////        return service.registerUser(user);
-//    }
-
-//    @PostMapping("/login")
-//    public String login(@RequestBody  Users user){
-////        System.out.println("login >>>>");
-//         return service.verify(user);
-//    }
+    @PutMapping("profile/{userId}")
+    public ResponseEntity<Users> updateUserProfile(@PathVariable Long userId, @RequestBody Users updatedUser) {
+        Users user = service.updateUserProfile(userId, updatedUser);
+        return ResponseEntity.ok(user);
+    }
 
 @PostMapping("/register")
 public ResponseEntity<Map<String, String>> register(@RequestBody Users user) {
@@ -80,7 +72,6 @@ public ResponseEntity<Map<String, String>> register(@RequestBody Users user) {
         return ResponseEntity.ok(service.getUserByEmail(email));
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update-deposit/{userId}")
     public ResponseEntity<String> updateSecurityDeposit(
             @PathVariable Long userId,
@@ -101,22 +92,16 @@ public ResponseEntity<Map<String, String>> register(@RequestBody Users user) {
         return ResponseEntity.ok(response);
     }
 
-
-
     @PutMapping("/update/{id}")  // New API: http://localhost:8080/users/update/{id}
     public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users updatedUser) {
         Users updated = service.updateUser(id, updatedUser);
         return ResponseEntity.ok(updated);
     }
 
-
     @GetMapping("/id/{userId}")
     public ResponseEntity<Users> getUserById(@PathVariable Long userId) {
         Optional<Users> user = service.getUserById(userId);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-
-
 
 }

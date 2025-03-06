@@ -17,52 +17,13 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-//    @Autowired
-//    private JWTService jwtService;
-
-//    @Autowired
-//    AuthenticationManager authManager;
 
     @Autowired
     private  UserRepository repository;
 
-//    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
-//
-//    public Users registerUser(Users user) {
-//        user.setPassword(encoder.encode(user.getPassword()));
-//          System.out.println("Saving user: " + user);
-//        return repository.save(user);
-//    }
-
     public  Optional<Users> getUserByEmail(String email) {
         return repository.findByEmail(email);
     }
-
-
-//public String verify(Users user) {
-//    System.out.println("User trying to log in: " + user.getUserName());
-//
-//    Optional<Users> existingUser = repository.findByUserName(user.getUserName());
-//
-//    if (existingUser.isEmpty()) {
-//        return "User not found";
-//    }
-//
-//    // Check hashed password
-//    if (!encoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-//        return "Invalid credentials";
-//    }
-//
-//    // Authenticate user
-//    Authentication authentication = authManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
-//
-//    if (authentication.isAuthenticated()) {
-//        return jwtService.generateToken(user.getUserName());
-//    } else {
-//        return "Authentication failed";
-//    }
-//}
 
     public List<Users> findAll() {
         return repository.findAll();
@@ -99,26 +60,6 @@ public class UserService {
         repository.save(user);
         return "User registered successfully!";
     }
-
-
-//    public String registerUser(String email, String password, String phoneNo, String role, int securityDeposit, String userName) {
-//        Optional<Users> existingUser = repository.findByEmail(email);
-//
-//        if (existingUser.isPresent()) {
-//            return "Email already exists!";
-//        }
-//
-//        Users newUser = new Users(); // Corrected from `User` to `Users`
-//        newUser.setEmail(email);
-//        newUser.setPassword(password); // Storing password as plain text
-//        newUser.setPhoneNo(phoneNo);
-//        newUser.setRole(role);
-//        newUser.setSecurityDeposit(securityDeposit);
-//        newUser.setUsername(userName);
-//
-//        repository.save(newUser);
-//        return "User registered successfully!";
-//    }
 
     public List<Users> getRenters() {
         return repository.findRenters();
@@ -170,5 +111,17 @@ public class UserService {
         return repository.findById(userId);
     }
 
+    public Users updateUserProfile(Long userId, Users updatedUser) {
+        return repository.findById(userId).map(user -> {
+            user.setUserName(updatedUser.getUserName());  // ✅ Corrected method name
+            user.setPhoneNo(updatedUser.getPhoneNo());    // ✅ No issue
+            user.setEmail(updatedUser.getEmail());        // ✅ No issue
+            return repository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    }
 
+
+    public double getUserSecurityDeposit(Long userId) {
+        return repository.getById(userId).getSecurityDeposit();
+    }
 }
