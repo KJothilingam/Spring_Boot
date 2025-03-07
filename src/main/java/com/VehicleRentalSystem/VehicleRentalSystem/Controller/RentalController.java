@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rentals")
@@ -20,13 +21,6 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
-//    @PostMapping("/extend")
-//    public ResponseEntity<String> extendRental(@RequestParam Long rentalId) {
-//        String response = rentalService.extendRental(rentalId);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.TEXT_PLAIN)
-//                .body(response);
-//    }
 
     @PostMapping("/extend")
     public ResponseEntity<Rental> extendRental(@RequestParam Long rentalId) {
@@ -36,17 +30,17 @@ public class RentalController {
 
 
     @PutMapping("/return/{rentalId}")
-    public ResponseEntity<String> returnVehicle(
+    public ResponseEntity<Map<String, Object>> returnVehicle(
             @PathVariable Long rentalId,
             @RequestParam int kmsDriven,
             @RequestParam String damageLevel,
             @RequestParam String paymentMethod) {
 
-        String response = rentalService.returnVehicle(rentalId, kmsDriven, damageLevel, paymentMethod);
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(response);
+        return rentalService.returnVehicle(rentalId, kmsDriven, damageLevel, paymentMethod);
     }
+
+
+
 
 
     @PostMapping("/rent/{vehicleId}")
