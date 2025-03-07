@@ -20,13 +20,20 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
+//    @PostMapping("/extend")
+//    public ResponseEntity<String> extendRental(@RequestParam Long rentalId) {
+//        String response = rentalService.extendRental(rentalId);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.TEXT_PLAIN)
+//                .body(response);
+//    }
+
     @PostMapping("/extend")
-    public ResponseEntity<String> extendRental(@RequestParam Long rentalId) {
-        String response = rentalService.extendRental(rentalId);
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(response);
+    public ResponseEntity<Rental> extendRental(@RequestParam Long rentalId) {
+        Rental updatedRental = rentalService.extendRental(rentalId);
+        return ResponseEntity.ok(updatedRental);
     }
+
 
     @PutMapping("/return/{rentalId}")
     public ResponseEntity<String> returnVehicle(

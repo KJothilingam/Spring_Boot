@@ -28,32 +28,79 @@ public class RentalService {
     @Autowired
     private UserRepository userRepository;
 
+//@Transactional
+//public String extendRental(Long rentalId) {
+//    Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
+//    if (rentalOpt.isEmpty()) {
+//        return "Rental not found!";
+//    }
+//    Rental rental = rentalOpt.get();
+//    Users user = rental.getBorrower();
+//    Vehicle vehicle = rental.getVehicle();
+//
+//    if (rental.isReturned()) {
+//        return "Cannot extend! Vehicle is already returned.";
+//    }
+//
+//    if (rental.getExtensionCount() >= 2) {
+//        return "Rental extension limit reached!";
+//    }
+//
+//    if (rental.getReturnDate() == null) {
+//        rental.setReturnDate(LocalDate.now().plusDays(1)); // Fix Null Issue
+//    }
+//
+//    double additionalCost = vehicle.getRentalPrice();
+//
+//    if (user.getSecurityDeposit() < additionalCost) {
+//        return "Insufficient security deposit! Required: ₹" + additionalCost + ", Available: ₹" + user.getSecurityDeposit();
+//    }
+//
+//    user.setSecurityDeposit(user.getSecurityDeposit() - (int) additionalCost);
+//    userRepository.save(user);
+//
+//    rental.setReturnDate(rental.getReturnDate().plusDays(1));
+//    rental.setExtensionCount(rental.getExtensionCount() + 1);
+//
+//    // Update total cost
+//    rental.setTotalCost(rental.getTotalCost() + (int) additionalCost);
+//
+//    rentalRepository.save(rental);
+//
+//    return "Rental extended!\n" +
+//            "Extension Count: " + rental.getExtensionCount() + "\n" +
+//            "New Return Date: " + rental.getReturnDate() + "\n" +
+//            "Additional Cost: ₹" + additionalCost;
+//
+////    return "Rental extended! New Return Date: " + rental.getReturnDate() + " | Additional Cost: ₹" + additionalCost;
+//}
+
 @Transactional
-public String extendRental(Long rentalId) {
+public Rental extendRental(Long rentalId) {
     Optional<Rental> rentalOpt = rentalRepository.findById(rentalId);
     if (rentalOpt.isEmpty()) {
-        return "Rental not found!";
+        throw new RuntimeException("Rental not found!");
     }
     Rental rental = rentalOpt.get();
     Users user = rental.getBorrower();
     Vehicle vehicle = rental.getVehicle();
 
     if (rental.isReturned()) {
-        return "Cannot extend! Vehicle is already returned.";
+        throw new RuntimeException("Cannot extend! Vehicle is already returned.");
     }
 
     if (rental.getExtensionCount() >= 2) {
-        return "Rental extension limit reached!";
+        throw new RuntimeException("Rental extension limit reached!");
     }
 
     if (rental.getReturnDate() == null) {
-        rental.setReturnDate(LocalDate.now().plusDays(1)); // Fix Null Issue
+        rental.setReturnDate(LocalDate.now().plusDays(1));
     }
 
     double additionalCost = vehicle.getRentalPrice();
 
     if (user.getSecurityDeposit() < additionalCost) {
-        return "Insufficient security deposit! Required: ₹" + additionalCost + ", Available: ₹" + user.getSecurityDeposit();
+        throw new RuntimeException("Insufficient security deposit! Required: ₹" + additionalCost + ", Available: ₹" + user.getSecurityDeposit());
     }
 
     user.setSecurityDeposit(user.getSecurityDeposit() - (int) additionalCost);
@@ -61,22 +108,15 @@ public String extendRental(Long rentalId) {
 
     rental.setReturnDate(rental.getReturnDate().plusDays(1));
     rental.setExtensionCount(rental.getExtensionCount() + 1);
-
-    // Update total cost
     rental.setTotalCost(rental.getTotalCost() + (int) additionalCost);
 
     rentalRepository.save(rental);
 
-    return "Rental extended!\n" +
-            "Extension Count: " + rental.getExtensionCount() + "\n" +
-            "New Return Date: " + rental.getReturnDate() + "\n" +
-            "Additional Cost: ₹" + additionalCost;
-
-//    return "Rental extended! New Return Date: " + rental.getReturnDate() + " | Additional Cost: ₹" + additionalCost;
+    return rental;
 }
 
 
-public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, String paymentMethod) {
+    public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, String paymentMethod) {
     Rental rental = rentalRepository.findById(rentalId)
             .orElseThrow(() -> new RuntimeException("Rental not found"));
     Vehicle vehicle = rental.getVehicle();
