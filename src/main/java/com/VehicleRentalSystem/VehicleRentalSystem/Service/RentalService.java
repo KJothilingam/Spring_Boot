@@ -67,7 +67,12 @@ public String extendRental(Long rentalId) {
 
     rentalRepository.save(rental);
 
-    return "Rental extended! New Return Date: " + rental.getReturnDate() + " | Additional Cost: ₹" + additionalCost;
+    return "Rental extended!\n" +
+            "Extension Count: " + rental.getExtensionCount() + "\n" +
+            "New Return Date: " + rental.getReturnDate() + "\n" +
+            "Additional Cost: ₹" + additionalCost;
+
+//    return "Rental extended! New Return Date: " + rental.getReturnDate() + " | Additional Cost: ₹" + additionalCost;
 }
 
 
@@ -95,14 +100,17 @@ public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, St
         paymentMessage = "Amount paid by Credit Card: ₹" + damageFee;
     }
 
+    int temp=rental.getTotalCost();
     rental.setTotalCost(rental.getTotalCost() + (int) damageFee);
     rental.setReturned(true);
     rental.setReturnDate(LocalDate.now());
     vehicle.setAvailable(true);
 
     rentalRepository.save(rental);
+    return String.format("Vehicle returned successfully.\nRental Charges: ₹%d\nDamage Charges: ₹%.2f\nTotal Cost: ₹%d\n%s",
+            temp, damageFee, rental.getTotalCost(), paymentMessage);
 
-    return "Vehicle returned successfully. " + paymentMessage;
+//    return "Vehicle returned successfully. " + paymentMessage +"Rental Charges :"+temp +"Total Charges : "+rental.getTotalCost();
 }
 
 
@@ -202,3 +210,4 @@ public String returnVehicle(Long rentalId, int kmsDriven, String damageLevel, St
     }
 
 }
+
